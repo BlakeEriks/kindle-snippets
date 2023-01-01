@@ -1,5 +1,5 @@
 export type Author = {
-  id:     number
+  id?:     number
   name:   string
 }
 
@@ -10,6 +10,7 @@ export type Book = {
 }
 
 export type Quote = {
+  id?:         number
   source:     Book
   quotee:     string
   content:    string

@@ -18,14 +18,16 @@ const FileDrop = ({setMode, setSnippets}: FileDropProps) => {
         }
         setMode('analyzing')
         let snippets = binaryStr.split('==========').map(entry => entry.split(/\r?\n/).filter(data => data.length))
+        console.log('unparsed', snippets)
         const parsedSnippets = snippets.map(([source, meta, content]) => {
-          if (!source || !meta || !content ) return { source, meta, content, createdAt: new Date() }
+          // if (!source || !meta || !content ) return { source, meta, content, createdAt: new Date() }
   
-          const parts: string[] = meta.split(" | ")
-          const inception = parts.pop()
-          const createdAt = new Date(inception!.replace('Added on ',''))
-          return { source, meta: parts.join(" | "), content, createdAt }
-        })
+          const parts: string[] = meta?.split(" | ")
+          const inception = parts?.pop()
+          const createdAt = inception && new Date(inception.replace('Added on ',''))
+          return createdAt && { source, meta: parts?.join(" | "), content, createdAt }
+        }).filter(Boolean)
+        // console.log(parsedSnippets)
   
         setSnippets(parsedSnippets)
       }
