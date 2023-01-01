@@ -1,19 +1,5 @@
-import create from 'zustand'
-import { persist } from 'zustand/middleware'
+import { atomWithStorage } from 'jotai/utils'
 
-interface DeletedSnippetsState {
-  deleted: number[]
-  add: (id: number) => void
-}
+const deletedSnippetsAtom = atomWithStorage<number[]>('deleted-snippets', [])
 
-const useDeletedSnippets = create<DeletedSnippetsState>()(persist(
-  set => ({
-    deleted: [],
-    add: (id) => set((state) => ({ deleted: [...state.deleted, id] })),
-  }),
-  {
-    name: 'deleted-snippets', // name of item in the storage (must be unique)
-  }
-))
-
-export default useDeletedSnippets
+export default deletedSnippetsAtom
