@@ -3,6 +3,8 @@ import { Button, Divider, Input, Select, Space } from "antd"
 import { useEffect, useState } from "react"
 import useAuthorApi from '../../api/author';
 import { Author } from "../../types/types";
+import useModal from '../../state/modal';
+import useBookApi from '../../api/book';
 const { Option } = Select;
 
 interface NewBookDialogueProps {
@@ -11,16 +13,24 @@ interface NewBookDialogueProps {
 
 const NewBookDialogue = ({bookClue}: NewBookDialogueProps) => {
 
+  const { createBook } = useBookApi()
   const { allAuthors, saveAuthor, deleteAuthor } = useAuthorApi()
   const [titleClue, authorClue] = bookClue?.split('(').map(clue => clue.slice(0, -1)) || []
   const [author, setAuthor] = useState<Author>()
   const [title, setTitle] = useState<string>()
   const [newAuthor, setNewAuthor] = useState<string>()
+  const { updateProps } = useModal()
 
   useEffect(() => {
     setTitle(titleClue)
     setNewAuthor(authorClue)
   }, [titleClue, authorClue])
+
+  useEffect(() => {
+    updateProps({ onOk: async () => {
+      await createBook({title, author})
+    }})
+  }, [])
 
   return (
     <>
@@ -75,7 +85,7 @@ const NewBookDialogue = ({bookClue}: NewBookDialogueProps) => {
         </Select>
       </div>
     </>
- )
+  )
 }
 
 export default NewBookDialogue

@@ -1,15 +1,9 @@
 import { PlusOutlined, SmileOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Tooltip, Select, Divider, Space, Pagination, Upload } from 'antd';
-import { useEffect, useState } from 'react';
-import useDeletedSnippets from './state/deletedSnippets';
-import { Book, Quote, Snippet } from './types/types';
-import FileDrop from './components/FileDrop';
-import { Input } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
-import deletedSnippetsAtom from './state/deletedSnippets';
-import { useAtom } from 'jotai';
+import { Button, Tooltip, Upload } from 'antd';
+import { Outlet } from 'react-router-dom';
 import useQuotesApi from './api/quote';
 import useModal from './state/modal';
+import useFileUpload from './util/fileUpload';
 
 /**
  * TODO
@@ -20,9 +14,9 @@ import useModal from './state/modal';
  *  */ 
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { allQuotes } = useQuotesApi()
   const { openModal } = useModal()
+  const { handleUpload, dummyRequest } = useFileUpload()
 
   const openUserModal = () => {
     // openModal(
@@ -42,7 +36,7 @@ function App() {
           <h1 className='text-4xl'>Quoatz</h1>
           <div className='flex w-36 justify-between'>
             <Tooltip placement="bottom" title="Upload Snippets">
-              <Upload>
+              <Upload beforeUpload={handleUpload} name='file' customRequest={dummyRequest} showUploadList={false}>
                 <Button size='large' icon={<UploadOutlined />} className='flex items-center justify-center' />
               </Upload>
             </Tooltip>
@@ -54,13 +48,14 @@ function App() {
             </Tooltip>
           </div>
         </header>
-        {allQuotes.data?.slice(0,10).map((quote, index) => (
+        <Outlet />
+        {/* {allQuotes.data?.slice(0,10).map((quote, index) => (
           <div className='my-3'>
             <div key={index} className={'border-l-2 border-black pl-4'}>
               <span className='italic font-light'>"{quote.content}"</span><span className='whitespace-nowrap'> - {quote.quotee}</span>
             </div>
           </div>
-        ))}
+        ))} */}
       </div>
       {/* <NewBookModal open={isModalOpen} setOpen={setIsModalOpen} createAndSetBook={createAndSetBook} bookClue={currentSnippet?.source}/> */}
     </div>

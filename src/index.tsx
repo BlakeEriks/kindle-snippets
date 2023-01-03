@@ -5,6 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Modal from './components/Modal';
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import UploadSnippets from './components/UploadSnippets';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,12 +16,27 @@ const queryClient = new QueryClient({
   },
 })
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<App />}>
+      {/* <Route
+        path="home"
+        element={<Home />}
+      /> */}
+      <Route
+        path="upload"
+        element={<UploadSnippets />}
+      />
+    </Route>
+  )
+);
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <QueryClientProvider client={queryClient}>
-    <App />
+    <RouterProvider router={router} />
     <Modal />
   </QueryClientProvider>
 );

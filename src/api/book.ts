@@ -17,7 +17,7 @@ const useBookApi = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(book)
       }
-      const res = await  fetch("http://localhost:8000/books", requestOptions)
+      const res = await fetch("http://localhost:8000/books", requestOptions)
       queryClient.invalidateQueries('books')
       return await res.json()
     }

@@ -10,15 +10,16 @@ import { Input } from 'antd';
 import useBooksApi from '../api/book';
 import useModal from '../state/modal';
 import NewBookDialogue from './dialogue/NewBookDialogue';
+import { useLocation } from 'react-router-dom';
 
-const ExamineSnippets = () => {
-
+const UploadSnippets = () => {
+  const { state } = useLocation();
   const { allQuotes, saveQuote } = useQuotesApi()
-  const { allBooks } = useBooksApi()
+  const { allBooks, createBook } = useBooksApi()
   const { openModal } = useModal()
 
   const [quote, setQuote] = useState<Partial<Quote>>()
-  const [snippets, setSnippets] = useState<Snippet[]>()
+  const [snippets, setSnippets] = useState<Snippet[]>(state.snippets)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [deletedSnippets, setDeletedSnippets] = useAtom(deletedSnippetsAtom)
   const [sourceMap, setSourceMap] = useState<{[key: string]: number}>({})
@@ -27,9 +28,6 @@ const ExamineSnippets = () => {
   const currentSnippet = filteredSnippets && filteredSnippets[currentIndex]
   const existing = allQuotes.data?.find(({createdAt}) => currentSnippet?.createdAt.getTime() === new Date(createdAt).getTime())
   const quoteSaved = existing && existing.content === quote?.content
-  const isQuoteValid = quote?.source && quote?.content
-
-  // <FileDrop setMode={setMode} setSnippets={setSnippets}/>
 
   useEffect(() => {
     if (!currentSnippet) { return }
@@ -53,7 +51,6 @@ const ExamineSnippets = () => {
   }
 
   const onDelete = () => {
-    const existing = allQuotes.data?.find(({ createdAt }) => new Date(createdAt) === currentSnippet?.createdAt)
     if (existing) {
 
     }
@@ -62,12 +59,11 @@ const ExamineSnippets = () => {
     }
   }
 
-  const openNewBookModal = () => {
-    openModal({
-      title: "New Book",
-      children: <NewBookDialogue bookClue={currentSnippet?.source!}/>,
-    })
-  }
+  const openNewBookModal = () => openModal({
+    title: "New Book",
+    children: <NewBookDialogue bookClue={currentSnippet?.source!}/>,
+    // onOk: async () => await createBook()
+  })
 
   return (
     <div className={"flex justify-center items-center w-4/5 mt-12 border-dashed border-2 shadow-lg " + (quoteSaved ? " shadow-green-500" : "shadow-yellow-500")}>
@@ -120,7 +116,7 @@ const ExamineSnippets = () => {
             />
             <div className="flex justify-center">
               <Button onClick={onDelete} danger className='mr-2'>Delete</Button>
-              <Button type='primary' onClick={() => saveQuote(quote as Quote)} disabled={!isQuoteValid}>Save</Button>
+              <Button type='primary' onClick={() => saveQuote(quote as Quote)} disabled={!quote?.source || !quote?.content}>Save</Button>
             </div>
           </div>
         }
@@ -128,4 +124,4 @@ const ExamineSnippets = () => {
   )
 }
 
-export default ExamineSnippets
+export default UploadSnippets
