@@ -7,6 +7,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import Modal from './components/Modal';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import UploadSnippets from './components/UploadSnippets';
+import UserSelect from './components/UserSelect';
+import Quotes from './components/Quotes';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,13 +18,15 @@ const queryClient = new QueryClient({
   },
 })
 
+// TODO redirect to User Select if no user selected
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      {/* <Route
-        path="home"
-        element={<Home />}
-      /> */}
+      <Route index element={<Quotes />}/>
+      <Route
+        path="user"
+        element={<UserSelect />}
+      />
       <Route
         path="upload"
         element={<UploadSnippets />}
