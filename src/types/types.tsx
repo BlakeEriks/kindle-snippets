@@ -10,7 +10,7 @@ export type Book = {
 }
 
 export type Quote = {
-  id?:         number
+  id?:        number
   source:     Book
   quotee:     string
   content:    string
@@ -23,4 +23,9 @@ export type Snippet = {
   meta: string
   createdAt: Date
   content: string
+}
+
+export type User = {
+  id: number
+  name: string
 }

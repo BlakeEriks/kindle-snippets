@@ -2,35 +2,25 @@ import { CloseOutlined, PlusOutlined } from "@ant-design/icons"
 import { Button, Divider, Input, Select, Space } from "antd"
 import { useEffect, useState } from "react"
 import useAuthorApi from '../../api/author';
-import { Author } from "../../types/types";
-import useModal from '../../state/modal';
-import useBookApi from '../../api/book';
+import { Book } from "../../types/types";
 const { Option } = Select;
 
 interface NewBookDialogueProps {
   bookClue: string
+  book: Book
+  setBook: Function
 }
 
-const NewBookDialogue = ({bookClue}: NewBookDialogueProps) => {
+const NewBookDialogue = ({bookClue, book, setBook}: NewBookDialogueProps) => {
 
-  const { createBook } = useBookApi()
   const { allAuthors, saveAuthor, deleteAuthor } = useAuthorApi()
   const [titleClue, authorClue] = bookClue?.split('(').map(clue => clue.slice(0, -1)) || []
-  const [author, setAuthor] = useState<Author>()
-  const [title, setTitle] = useState<string>()
   const [newAuthor, setNewAuthor] = useState<string>()
-  const { updateProps } = useModal()
 
   useEffect(() => {
-    setTitle(titleClue)
+    setBook({...book, title: titleClue})
     setNewAuthor(authorClue)
   }, [titleClue, authorClue])
-
-  useEffect(() => {
-    updateProps({ onOk: async () => {
-      await createBook({title, author})
-    }})
-  }, [])
 
   return (
     <>
@@ -38,7 +28,7 @@ const NewBookDialogue = ({bookClue}: NewBookDialogueProps) => {
         <span className='mr-4'>
           Title:
         </span>
-        <Input value={title} onChange={({ target }) => setTitle(target.value)}/>
+        <Input value={book.title} onChange={({ target }) => setBook({...book, title: target.value})}/>
       </div>
       <Space />
       <div className="flex items-center mt-4">
@@ -48,7 +38,7 @@ const NewBookDialogue = ({bookClue}: NewBookDialogueProps) => {
         <Select
           placeholder="Select Author"
           style={{flex: 1}}
-          onChange={(id: number) => setAuthor(allAuthors.data?.find(author => author.id === Number(id)))}
+          onChange={(id: number) => setBook({...book, author: allAuthors.data?.find(author => author.id === Number(id))})}
           optionLabelProp="label"
           dropdownRender={(menu) => (
             <div>
