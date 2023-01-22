@@ -1,34 +1,30 @@
-import { useState, useEffect } from 'react';
-import { Book, Quote, Snippet } from '../types/types';
+import { CopyOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
+import { Button, Pagination } from 'antd';
 import { useAtom } from 'jotai';
-import deletedSnippetsAtom from '../state/deletedSnippets';
-import useQuotesApi from '../api/quote';
-import { Select, Divider, Space, Button, Pagination } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import TextArea from 'antd/es/input/TextArea';
-import { Input } from 'antd';
-import useBooksApi from '../api/book';
-import useModal from '../state/modal';
-import NewBookDialogue from './dialogue/NewBookDialogue';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import useBooksApi from '../api/book';
+import useQuotesApi from '../api/quote';
+import deletedSnippetsAtom from '../state/deletedSnippets';
+import sourceMapAtom from '../state/sourceMap';
+import { Quote, Snippet } from '../types/types';
+import EditQuote from './EditQuote';
 
 const UploadSnippets = () => {
   const { state } = useLocation();
+  
   const { allQuotes, saveQuote } = useQuotesApi()
   const { allBooks, createBook } = useBooksApi()
-  const { openModal } = useModal()
-
+  const [sourceMap, setSourceMap] = useAtom(sourceMapAtom)
   const [quote, setQuote] = useState<Partial<Quote>>()
   const [snippets, setSnippets] = useState<Snippet[]>(state.snippets)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [deletedSnippets, setDeletedSnippets] = useAtom(deletedSnippetsAtom)
-  const [sourceMap, setSourceMap] = useState<{[key: string]: number}>({})
-
+  
   const filteredSnippets = snippets?.filter(snippet => !deletedSnippets.includes(snippet.createdAt.getTime()))
   const currentSnippet = filteredSnippets && filteredSnippets[currentIndex]
   const existing = allQuotes.data?.find(({createdAt}) => currentSnippet?.createdAt.getTime() === new Date(createdAt).getTime())
-  const quoteSaved = existing && existing.content === quote?.content
-
+  
   useEffect(() => {
     if (!currentSnippet) { return }
     
@@ -40,15 +36,7 @@ const UploadSnippets = () => {
       const mappedSource = sourceMap[source]
       setQuote({createdAt, content, meta, source: allBooks.data?.find(({id}) => id === mappedSource)}) 
     }
-  }, [currentSnippet, allQuotes.data])
-
-  const updateBook = (id: number) => {
-    if (currentSnippet) {
-      setSourceMap({...sourceMap, [currentSnippet.source]: id})
-    }
-      
-    setQuote({...quote, source: allBooks.data?.find(book => book.id === id)!})
-  }
+  }, [currentSnippet, allQuotes.data, allBooks.data])
 
   const onDelete = () => {
     if (existing) {
@@ -59,66 +47,39 @@ const UploadSnippets = () => {
     }
   }
 
-  const openNewBookModal = () => openModal({
-    title: "New Book",
-    children: <NewBookDialogue bookClue={currentSnippet?.source!}/>,
-    // onOk: async () => await createBook()
-  })
+  const addQuote = () => {
+    const index = snippets.findIndex(snippet => snippet.createdAt === currentSnippet.createdAt)
+    const createdAt = new Date (new Date(currentSnippet.createdAt).getTime() + 1000)
+    setSnippets([
+      ...snippets.slice(0,index), 
+      {
+        ...currentSnippet,
+        createdAt
+      },
+      ...snippets.slice(index)
+    ])
+  }
 
   return (
-    <div className={"flex justify-center items-center w-4/5 mt-12 border-dashed border-2 shadow-lg " + (quoteSaved ? " shadow-green-500" : "shadow-yellow-500")}>
+    <div className='flex justify-center items-center w-full mt-12 border-dashed border-2 shadow-lg'>
       {
         quote && currentSnippet &&
-          <div className='h-full flex flex-col items-stretch'>
-            <h1 className='text-2xl m-3 relative top-2'>Time to analyze each one, edit or delete, and save!</h1>
-            <h2>Source: {currentSnippet.source}</h2>
-            <Select
-              options={allBooks.data?.map((book: Book) => ({ label: `${book.title} - ${book.author.name}`, value: book.id}))}
-              placeholder="Select Book"
-              onChange={id => updateBook(id)}
-              value={quote.source?.id}
-              className="my-4"
-              dropdownRender={(menu) => (
-                <div>
-                  {menu}
-                  <Divider style={{ margin: '8px 0' }} />
-                  <Space style={{ padding: '0 8px 4px' }}>
-                    <Button type="text" icon={<PlusOutlined />} onClick={openNewBookModal}>
-                      Create New Book
-                    </Button>
-                  </Space>
-                </div>
-              )}
-            >
-              {quote.source?.title || "Select Book"}
-            </Select>
-            <Input
-              className='mb-4'
-              placeholder='Speaker (Defaults to Author)'
-              value={quote.quotee}
-              onChange={({ target }) => setQuote({...quote, quotee: target.value})}
-            />
-            <TextArea
-              showCount
-              rows={16}
-              className='italic'
-              value={quote.content}
-              onChange={({ target }) => setQuote({...quote, content: target.value})}
-            />
-            <p>{" " + quote?.meta}</p>
-            <Pagination
-              simple
-              pageSize={1}
-              current={currentIndex + 1}
-              total={filteredSnippets?.length}
-              onChange={val => setCurrentIndex(val - 1)}
-              className="flex justify-center my-2"
-            />
-            <div className="flex justify-center">
-              <Button onClick={onDelete} danger className='mr-2'>Delete</Button>
-              <Button type='primary' onClick={() => saveQuote(quote as Quote)} disabled={!quote?.source || !quote?.content}>Save</Button>
+        <div className='flex flex-col items-center w-1/2'>
+          <EditQuote snippet={currentSnippet} quote={quote} setQuote={setQuote}/>
+          <Pagination
+            simple
+            pageSize={1}
+            current={currentIndex + 1}
+            total={filteredSnippets?.length}
+            onChange={val => setCurrentIndex(val - 1)}
+            className="flex justify-center my-2"
+          />
+          <div className="flex justify-center my-2">
+            <Button icon={<DeleteOutlined />} onClick={onDelete} danger className='mr-2'>Delete</Button>
+            <Button icon={<CopyOutlined />} onClick={addQuote} className='mr-2'>Duplicate</Button>
+            <Button icon={<SaveOutlined />} type='primary' onClick={() => saveQuote(quote as Quote)} disabled={!quote?.source || !quote?.content}>Save</Button>
             </div>
-          </div>
+        </div>
         }
     </div> 
   )
