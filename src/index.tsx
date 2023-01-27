@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -7,8 +6,9 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import Modal from './components/Modal';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import UploadSnippets from './components/UploadSnippets';
-import UserSelect from './components/UserSelect';
 import Quotes from './components/Quotes';
+import NewQuote from './components/NewQuote';
+import UserSelect from './components/UserSelect';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,6 +26,10 @@ const router = createBrowserRouter(
       <Route
         path="user"
         element={<UserSelect />}
+      />
+      <Route
+        path="new"
+        element={<NewQuote />}
       />
       <Route
         path="upload"
