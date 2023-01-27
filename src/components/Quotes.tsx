@@ -28,7 +28,7 @@ const Quotes = () => {
       title: 'Book',
       dataIndex: 'source',
       key: 'source',
-      render: (source: Book) => source.title
+      render: (source: Book) => source ? source.title : '-'
     },
     {
       title: 'Quote',
@@ -83,6 +83,8 @@ const Quotes = () => {
       <Table
         dataSource={allQuotes.data?.map((quote, index) => ({...quote, key: index}))}
         columns={columns}
+        scroll={{ y: 600 }}
+        pagination={false}
       />
     </div>
   )

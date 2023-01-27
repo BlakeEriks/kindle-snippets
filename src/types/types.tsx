@@ -16,6 +16,7 @@ export type Quote = {
   content:    string
   meta:       string
   createdAt:  Date
+  tags:       Tag[]
 }
 
 export type Snippet = {
@@ -26,6 +27,11 @@ export type Snippet = {
 }
 
 export type User = {
+  id: number
+  name: string
+}
+
+export type Tag = {
   id: number
   name: string
 }
