@@ -3,14 +3,16 @@ import { Button, Divider, Input, Modal, Select, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
 import useBooksApi from '../api/book';
 import useQuotesApi from '../api/quote';
+import TagApi from '../api/tag';
 import sourceMapAtom from '../state/sourceMap';
-import { Book, Quote } from '../types/types';
+import { Book, Quote, Snippet, Tag } from '../types/types';
 import NewBookDialogue from './dialogue/NewBookDialogue';
 
 type EditQuoteProps = {
-  snippet: any
+  snippet?: Snippet
   quote: Partial<Quote>
   setQuote: Function
 }
@@ -23,8 +25,9 @@ const EditQuote = ({ snippet, quote, setQuote }: EditQuoteProps) => {
   const [open, setOpen] = useState(false)
   const [newBook, setNewBook] = useState<Book>({title: '', author: { name: '' }})
 
+  const tags = useQuery<Tag[], Error>('tags', TagApi.getAllTags)
   const existing = allQuotes.data?.find(({createdAt}) => snippet?.createdAt.getTime() === new Date(createdAt).getTime())
-  const quoteSaved = existing && existing.content === quote?.content
+  const quoteSaved = existing && existing.content === quote?.content && existing.tags === quote?.tags
 
   const updateBook = (id: number) => {
     if (snippet?.source) {
@@ -69,6 +72,20 @@ const EditQuote = ({ snippet, quote, setQuote }: EditQuoteProps) => {
         placeholder='Speaker (Defaults to Author)'
         value={quote.quotee}
         onChange={({ target }) => setQuote({...quote, quotee: target.value})}
+      />
+      <Select
+        className='mb-4'
+        mode="tags"
+        style={{ width: '100%' }}
+        placeholder="Tags"
+        onChange={tags => setQuote({
+          ...quote,
+          tags: tags.map((tag: string) => ({ name: tag }))
+        })}
+        options={tags.data?.map(tag => ({
+          value: tag.name,
+          label: tag.name
+        }))}
       />
       <TextArea
         showCount
