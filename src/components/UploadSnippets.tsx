@@ -1,5 +1,5 @@
 import { CopyOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
-import { Pagination } from 'antd';
+import { Checkbox, Pagination } from 'antd';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -15,14 +15,19 @@ const UploadSnippets = () => {
   const { state } = useLocation();
   
   const { allQuotes, saveQuote } = useQuotesApi()
-  const { allBooks, createBook } = useBooksApi()
-  const [sourceMap, setSourceMap] = useAtom(sourceMapAtom)
+  const { allBooks } = useBooksApi()
+  const [sourceMap] = useAtom(sourceMapAtom)
   const [quote, setQuote] = useState<Partial<Quote>>({})
   const [snippets, setSnippets] = useState<Snippet[]>(state.snippets)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [deletedSnippets, setDeletedSnippets] = useAtom(deletedSnippetsAtom)
+  const [hideSaved, setHideSaved] = useState(false)
   
-  const filteredSnippets = snippets?.filter(snippet => !deletedSnippets.includes(snippet.createdAt.getTime()))
+  const filteredSnippets = snippets?.filter(snippet => {
+    const existing = allQuotes.data?.find(({createdAt}) => snippet?.createdAt.getTime() === new Date(createdAt).getTime())
+    return !deletedSnippets.includes(snippet.createdAt.getTime()) && (hideSaved ? !existing : true)
+  })
+
   const currentSnippet = filteredSnippets && filteredSnippets[currentIndex]
   const existing = allQuotes.data?.find(({createdAt}) => currentSnippet?.createdAt.getTime() === new Date(createdAt).getTime())
   
@@ -40,6 +45,7 @@ const UploadSnippets = () => {
         content,
         meta,
         source: allBooks.data?.find(({id}) => id === mappedSource),
+        tags: []
       })
     }
   }, [currentSnippet, allQuotes.data, allBooks.data])
@@ -70,14 +76,23 @@ const UploadSnippets = () => {
     <div className='flex flex-col items-center w-1/2'>
       <h1 className='my-4 text-2xl'>Edit Snippets</h1>
       <EditQuote snippet={currentSnippet} quote={quote} setQuote={setQuote}/>
-      <Pagination
-        simple
-        pageSize={1}
-        current={currentIndex + 1}
-        total={filteredSnippets?.length}
-        onChange={val => setCurrentIndex(val - 1)}
-        className="flex justify-center my-2"
-      />
+      <div className='flex w-full items-center justify-center'>
+        <Checkbox 
+          checked={hideSaved} 
+          onClick={() => setHideSaved(!hideSaved)}
+          className='self-start'
+        >
+          Hide Saved
+        </Checkbox>
+        <Pagination
+          simple
+          pageSize={1}
+          current={currentIndex + 1}
+          total={filteredSnippets?.length}
+          onChange={val => setCurrentIndex(val - 1)}
+          className="my-2"
+        />
+      </div>
       <div className="flex justify-center my-2">
         <Button icon={<DeleteOutlined />} onClick={onDelete} danger className='mr-2'>Delete</Button>
         <Button icon={<CopyOutlined />} onClick={addQuote} className='mr-2'>Duplicate</Button>

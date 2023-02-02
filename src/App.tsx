@@ -27,7 +27,6 @@ function App() {
     <div className="App flex w-full flex-col items-center">
       <Header />
       <Outlet />
-      {/* <NewBookModal open={isModalOpen} setOpen={setIsModalOpen} createAndSetBook={createAndSetBook} bookClue={currentSnippet?.source}/> */}
     </div>
   );
 }

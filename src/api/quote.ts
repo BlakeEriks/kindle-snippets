@@ -28,7 +28,7 @@ const useQuotesApi = () => {
   
       const url = 'http://localhost:8000/quotes/' + (quote.id || '')
       const res = await fetch(url, requestOptions)
-      queryClient.invalidateQueries('quotes')
+      queryClient.invalidateQueries(['quotes', 'tags'])
       return await res.json()
     }
   }

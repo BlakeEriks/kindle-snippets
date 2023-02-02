@@ -18,7 +18,6 @@ type EditQuoteProps = {
 }
 
 const EditQuote = ({ snippet, quote, setQuote }: EditQuoteProps) => {
-
   const { allQuotes } = useQuotesApi()
   const { allBooks, createBook } = useBooksApi()
   const [sourceMap, setSourceMap] = useAtom(sourceMapAtom)
@@ -86,6 +85,7 @@ const EditQuote = ({ snippet, quote, setQuote }: EditQuoteProps) => {
           value: tag.name,
           label: tag.name
         }))}
+        defaultValue={quote.tags?.map(tag => tag.name)}
       />
       <TextArea
         showCount
