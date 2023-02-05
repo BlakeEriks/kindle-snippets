@@ -73,7 +73,7 @@ const UploadSnippets = () => {
   }
 
   return (
-    <div className='flex flex-col items-center w-1/2'>
+    <div className='flex flex-col items-center w-1/2 mx-auto'>
       <h1 className='my-4 text-2xl'>Edit Snippets</h1>
       <EditQuote snippet={currentSnippet} quote={quote} setQuote={setQuote}/>
       <div className='flex w-full items-center justify-center'>
