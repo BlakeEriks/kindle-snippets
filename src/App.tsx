@@ -4,12 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
 import userAtom from './state/user';
 import { useEffect } from 'react';
+import { Layout } from 'antd';
+import { Content } from 'antd/es/layout/layout';
 
 /**
  * TODO
- * Create a quote without the source, so we can write one offs
- * Let's make a singular view for quotes to land on that you can randomize, and then another view for looking at many quotes + filtering them
- * Move the source map into local storage and use as a hook
+ * Clear form on save one off quote
+ * Let's make a singular view for quotes to land on that you can randomize, or go to via /quotes/quote
+ * Save uploads to reclick on later
+ * Daily email feature
  *  */ 
 
 function App() {
@@ -24,10 +27,12 @@ function App() {
   }, [user, navigate])
 
   return (
-    <div className="App flex w-full flex-col items-center">
+    <Layout className='h-screen'>
       <Header />
-      <Outlet />
-    </div>
+      <Content>
+        <Outlet />
+      </Content>
+    </Layout>
   );
 }
 
