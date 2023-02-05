@@ -24,7 +24,10 @@ const EditQuote = ({ snippet, quote, setQuote }: EditQuoteProps) => {
   const [open, setOpen] = useState(false)
   const [newBook, setNewBook] = useState<Book>({title: '', author: { name: '' }})
 
-  const tags = useQuery<Tag[], Error>('tags', TagApi.getAllTags)
+  const tags = useQuery<Tag[], Error>({
+    queryKey: ['tags'], 
+    queryFn: TagApi.getAllTags
+  })
   const existing = allQuotes.data?.find(({createdAt}) => snippet?.createdAt.getTime() === new Date(createdAt).getTime())
   const quoteSaved = existing && existing.content === quote?.content && existing.tags === quote?.tags
 
@@ -85,7 +88,8 @@ const EditQuote = ({ snippet, quote, setQuote }: EditQuoteProps) => {
           value: tag.name,
           label: tag.name
         }))}
-        defaultValue={quote.tags?.map(tag => tag.name)}
+        // defaultValue=
+        value={quote.tags?.map(tag => tag.name)}
       />
       <TextArea
         showCount

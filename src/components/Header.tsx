@@ -1,6 +1,6 @@
 
 import { PlusOutlined, SmileOutlined, UploadOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Tooltip, Upload } from 'antd';
+import { Layout, Tooltip, Upload } from 'antd';
 import { useAtomValue } from 'jotai';
 import { Link } from 'react-router-dom';
 import userAtom from '../state/user';
@@ -12,11 +12,11 @@ const Header = () => {
   const user = useAtomValue(userAtom)
 
   return (
-    <header className='flex w-full justify-between bg-gray-200 p-10'>
+    <Layout.Header className='flex w-full justify-between pt-2'>
       <Link to="/">
-        <h1 className='text-4xl'>Quotes</h1>
+        <h1 className='text-4xl text-white'>Quotes</h1>
       </Link>
-      <div className='flex justify-between'>
+      <div className='flex'>
         <Link to="random">
           <Tooltip placement="bottom" title="Random Quote">
             <Button size='large' icon={<UserSwitchOutlined />} />
@@ -40,7 +40,7 @@ const Header = () => {
           </Link>
         </Tooltip>
       </div>
-    </header>
+    </Layout.Header>
   )
 }
 
