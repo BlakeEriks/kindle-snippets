@@ -1,5 +1,5 @@
 import { atomWithStorage } from 'jotai/utils'
-import { User } from '../types/types'
+import { User } from '../api/user'
 
 const userAtom = atomWithStorage<User | undefined>('activeUser', undefined)
 
