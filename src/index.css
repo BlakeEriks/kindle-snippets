@@ -6,3 +6,13 @@
 svg {
   vertical-align: baseline;
 }
+
+.ant-typography-edit {
+  opacity: 0;
+}
+
+.ant-typography:hover {
+  .ant-typography-edit {
+    opacity: 100;
+  }
+}
