@@ -1,12 +1,10 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { RcFile } from 'antd/es/upload'
 import { useAtomValue } from 'jotai'
-import useSnippetsApi from '../api/snippets'
+import useQuoteApi from '../api/quote'
 import userAtom from '../state/user'
 
 const useFileUpload = () => {
-  const { saveAllSnippets } = useSnippetsApi()
-  const queryClient = useQueryClient()
+  const { upload } = useQuoteApi()
   const user = useAtomValue(userAtom)
 
   console.log(user)
@@ -21,10 +19,10 @@ const useFileUpload = () => {
           if (!binaryStr || binaryStr instanceof ArrayBuffer) {
             return console.log('failed')
           }
-          let snippets = binaryStr
+          let clippings = binaryStr
             .split('==========')
             .map(entry => entry.split(/\r?\n/).filter(data => data.length))
-          const parsedSnippets = snippets
+          const parsedClippings = clippings
             .map(([source, meta, content]) => {
               const parts: string[] = meta?.split(' | ')
               const inception = parts?.pop()
@@ -37,7 +35,7 @@ const useFileUpload = () => {
             .filter(Boolean) as any[]
 
           // Save the snippets to server
-          resolve(await saveAllSnippets(parsedSnippets))
+          resolve(await upload(parsedClippings))
         }
       })
     },

@@ -4,14 +4,14 @@ import Search from 'antd/es/input/Search'
 import { ColumnsType } from 'antd/es/table'
 import { useState } from 'react'
 import useBookApi from '../api/book'
-import useQuotesApi, { Quote } from '../api/quote'
+import { Quote } from '../api/quote'
 import { TagType } from '../api/tag'
 import Table from './Table'
 
 const Quotes = () => {
-  const { allQuotes } = useQuotesApi()
-  const { allBooks } = useBookApi()
-  const [selected, setSelected] = useState('0')
+  const { books } = useBookApi()
+  const [selected, setSelected] = useState<string>()
+  const activeBook = books?.find(({ id }) => id === Number(selected))
 
   const columns: ColumnsType<Quote> = [
     {
@@ -23,7 +23,7 @@ const Quotes = () => {
       dataIndex: 'tags',
       render: tags => (
         <div className='flex flex-wrap'>
-          {tags.map((tag: TagType) => (
+          {tags?.map((tag: TagType) => (
             <Tag color='default' key={tag.id} className='p-1 m-1'>
               {tag.name}
             </Tag>
@@ -34,14 +34,10 @@ const Quotes = () => {
     },
   ]
 
-  const items: MenuProps['items'] = allBooks.data?.map((book, index) => ({
-    key: index,
-    label: <span>{book.title}</span>,
+  const items: MenuProps['items'] = books?.map(({ id, title }) => ({
+    key: id,
+    label: <span>{title}</span>,
   }))
-
-  const filteredQuotes = allQuotes.data
-    ?.map((quote, index) => ({ ...quote, key: index }))
-    .filter(quote => quote.source?.id === allBooks.data?.at(Number(selected))?.id)
 
   return (
     <div className='flex h-full'>
@@ -54,11 +50,11 @@ const Quotes = () => {
           items={items}
           className='overflow-auto'
           onSelect={({ key }) => setSelected(key)}
-          selectedKeys={[selected]}
+          selectedKeys={selected ? [selected] : []}
         />
       </div>
       <div className='flex-1'>
-        <Table dataSource={filteredQuotes} columns={columns} pagination={false} />
+        <Table dataSource={activeBook?.quotes} columns={columns} pagination={false} />
       </div>
     </div>
   )

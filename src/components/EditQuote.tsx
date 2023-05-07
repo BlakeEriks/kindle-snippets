@@ -3,34 +3,29 @@ import { useQuery } from '@tanstack/react-query'
 import { Typography } from 'antd'
 import { useState } from 'react'
 import useBooksApi, { Book } from '../api/book'
-import useQuotesApi, { Quote } from '../api/quote'
-import { Snippet } from '../api/snippets'
+import useQuoteApi, { Quote } from '../api/quote'
 import TagApi, { TagType } from '../api/tag'
 
 const { Paragraph, Title } = Typography
 
 type EditQuoteProps = {
-  snippet?: Snippet
   quote: Partial<Quote>
   setQuote: Function
 }
 
-const EditQuote = ({ snippet, quote, setQuote }: EditQuoteProps) => {
-  const { allQuotes } = useQuotesApi()
-  const { allBooks, createBook } = useBooksApi()
+const EditQuote = ({ quote, setQuote }: EditQuoteProps) => {
+  const { quotes } = useQuoteApi()
+  const { books, createBook } = useBooksApi()
   // const [sourceMap, setSourceMap] = useAtom(sourceMapAtom)
   const [open, setOpen] = useState(false)
-  const [newBook, setNewBook] = useState<Book>({
-    title: '',
-    author: { name: '' },
-  })
+  const [newBook, setNewBook] = useState<Book>()
 
   const tags = useQuery<TagType[], Error>({
     queryKey: ['tags'],
     queryFn: TagApi.getAllTags,
   })
-  const existing = allQuotes.data?.find(
-    ({ createdAt }) => snippet?.createdAt.getTime() === new Date(createdAt).getTime()
+  const existing = quotes?.find(
+    ({ createdAt }) => quote?.createdAt?.getTime() === new Date(createdAt).getTime()
   )
   const quoteSaved =
     existing && existing.content === quote?.content && existing.tags === quote?.tags
@@ -42,7 +37,7 @@ const EditQuote = ({ snippet, quote, setQuote }: EditQuoteProps) => {
 
     setQuote({
       ...quote,
-      source: allBooks.data?.find(book => book.id === id)!,
+      source: books?.find(book => book.id === id)!,
     })
   }
 
@@ -60,13 +55,13 @@ const EditQuote = ({ snippet, quote, setQuote }: EditQuoteProps) => {
       <div className='flex text-4xl items-center justify-center gap-x-2'>
         <ReadOutlined />
         <Title level={2} italic style={{ margin: 0 }} editable>
-          {quote.source?.title}
+          {quote.book?.title}
         </Title>
       </div>
       <div className='flex items-center justify-center gap-x-2'>
         By
         <Title level={4} italic style={{ margin: 0 }} editable>
-          {quote.source?.author.name}
+          {quote.book?.author.name}
         </Title>
       </div>
 
