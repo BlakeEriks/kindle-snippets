@@ -9,7 +9,7 @@ const useUserApi = () => {
   const queryClient = useQueryClient()
 
   return {
-    allUsers: useQuery<User[], Error>(['users'], async () => {
+    allUsers: useQuery<User[]>(['users'], async () => {
       const res = await fetch('http://localhost:8000/users')
       return await res.json()
     }),

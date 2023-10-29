@@ -1,43 +1,71 @@
-import { EditOutlined, PlusOutlined, SmileOutlined, UserSwitchOutlined } from '@ant-design/icons'
-import { Layout, Tooltip } from 'antd'
+import { Tooltip, Upload } from 'antd'
 import { useAtomValue } from 'jotai'
+import { ArrowLeftRight, HomeIcon, PlusIcon, SmileIcon, UploadIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import userAtom from '../state/user'
-import Button from './Button'
+import useFileUpload from '../util/fileUpload'
+import { Button } from './ui/button'
 
 const Header = () => {
   const user = useAtomValue(userAtom)
+  const { handleUpload, dummyRequest } = useFileUpload()
 
   return (
-    <Layout.Header className='flex w-full justify-between pt-2'>
-      <Link to='/'>
-        <h1 className='text-4xl text-white'>Quotes</h1>
-      </Link>
-      <div className='flex'>
+    <header className='flex flex-row w-full justify-between py-2 px-4 border-b'>
+      {/* <Link to='/'> */}
+      <div className='flex flex-1'>
+        <h1 className='text-4xl italic font-semibold'>Quotes</h1>
+        <h1 className='text-4xl italic font-light'>- the app</h1>
+      </div>
+      {/* </Link> */}
+      <div className='flex items-center'>
+        <Link to='/'>
+          <Tooltip placement='bottom' title='Home'>
+            <Button>
+              <HomeIcon />
+            </Button>
+          </Tooltip>
+        </Link>
         <Link to='random'>
           <Tooltip placement='bottom' title='Random Quote'>
-            <Button size='large' icon={<UserSwitchOutlined />} />
+            <Button>
+              <ArrowLeftRight />
+            </Button>
           </Tooltip>
         </Link>
-        <Link to='upload'>
-          <Tooltip placement='bottom' title='Upload Snippets'>
-            <Button size='large' icon={<EditOutlined />} />
+        {/* <Link to='staging'>
+          <Tooltip placement='bottom' title='Quote Staging'>
+            <Button>
+              <Edit />
+            </Button>
           </Tooltip>
-        </Link>
+        </Link> */}
+        <Tooltip placement='bottom' title='Upload Snippets'>
+          <Upload
+            beforeUpload={handleUpload}
+            name='file'
+            customRequest={dummyRequest}
+            showUploadList={false}
+          >
+            <Button>
+              <UploadIcon />
+            </Button>
+          </Upload>
+        </Tooltip>
         <Link to='new'>
           <Tooltip placement='bottom' title='Add Quote'>
-            <Button size='large' icon={<PlusOutlined />} />
+            <Button>
+              <PlusIcon />
+            </Button>
           </Tooltip>
         </Link>
-        <Tooltip placement='bottom' title='Change User'>
-          <Link to='user'>
-            <Button size='large' className='w-12'>
-              {user ? user.name[0].toUpperCase() : <SmileOutlined />}
-            </Button>
-          </Link>
-        </Tooltip>
+        <Link to='user'>
+          <Tooltip placement='bottom' title='Change User'>
+            <Button className='w-12'>{user ? user.name[0].toUpperCase() : <SmileIcon />}</Button>
+          </Tooltip>
+        </Link>
       </div>
-    </Layout.Header>
+    </header>
   )
 }
 

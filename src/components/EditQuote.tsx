@@ -1,12 +1,9 @@
 import { ReadOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
-import { Typography } from 'antd'
 import { useState } from 'react'
 import useBooksApi, { Book } from '../api/book'
 import useQuoteApi, { Quote } from '../api/quote'
 import TagApi, { TagType } from '../api/tag'
-
-const { Paragraph, Title } = Typography
 
 type EditQuoteProps = {
   quote: Partial<Quote>
@@ -15,7 +12,7 @@ type EditQuoteProps = {
 
 const EditQuote = ({ quote, setQuote }: EditQuoteProps) => {
   const { quotes } = useQuoteApi()
-  const { books, createBook } = useBooksApi()
+  const { getBooks, createBook } = useBooksApi()
   // const [sourceMap, setSourceMap] = useAtom(sourceMapAtom)
   const [open, setOpen] = useState(false)
   const [newBook, setNewBook] = useState<Book>()
@@ -34,11 +31,10 @@ const EditQuote = ({ quote, setQuote }: EditQuoteProps) => {
     // if (snippet?.source) {
     //   setSourceMap({ ...sourceMap, [snippet.source]: id })
     // }
-
-    setQuote({
-      ...quote,
-      source: books?.find(book => book.id === id)!,
-    })
+    // setQuote({
+    //   ...quote,
+    //   source: books?.find(book => book.id === id)!,
+    // })
   }
 
   const onModalConfirm = async () => {
@@ -54,15 +50,14 @@ const EditQuote = ({ quote, setQuote }: EditQuoteProps) => {
     <div className='h-full flex flex-col items-stretch w-full'>
       <div className='flex text-4xl items-center justify-center gap-x-2'>
         <ReadOutlined />
-        <Title level={2} italic style={{ margin: 0 }} editable>
-          {quote.book?.title}
-        </Title>
+        <header className='italic m-0' style={{ margin: 0 }}>
+          {/* <header className='italic m-0' style={{ margin: 0 }} editable> */}
+          {/* {quote.book?.title} */}
+        </header>
       </div>
       <div className='flex items-center justify-center gap-x-2'>
         By
-        <Title level={4} italic style={{ margin: 0 }} editable>
-          {quote.book?.author.name}
-        </Title>
+        <header className='italic m-0'>{/* {quote.book?.author.name} */}</header>
       </div>
 
       {/* <Select
