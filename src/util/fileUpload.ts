@@ -1,13 +1,13 @@
 import { RcFile } from 'antd/es/upload'
 import { useAtomValue } from 'jotai'
+import { useNavigate } from 'react-router-dom'
 import useQuoteApi from '../api/quote'
 import userAtom from '../state/user'
 
 const useFileUpload = () => {
   const { upload } = useQuoteApi()
   const user = useAtomValue(userAtom)
-
-  console.log(user)
+  const navigate = useNavigate()
 
   return {
     handleUpload: (file: RcFile, FileList: RcFile[]): Promise<any> => {
@@ -36,6 +36,7 @@ const useFileUpload = () => {
 
           // Save the snippets to server
           resolve(await upload(parsedClippings))
+          navigate('staging')
         }
       })
     },
