@@ -1,9 +1,10 @@
-import { Input, Modal } from 'antd'
+import { Modal } from 'antd'
 import { useAtom } from 'jotai'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useUserApi, { User } from '../api/user'
 import userAtom from '../state/user'
+import { Input } from './ui/input'
 
 const UserSelect = () => {
   const { allUsers, createUser } = useUserApi()
