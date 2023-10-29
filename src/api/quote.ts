@@ -3,17 +3,11 @@ import { TagType } from 'antd'
 import { useAtomValue } from 'jotai'
 import userAtom from '../state/user'
 import { stringify } from '../util/helper'
+import { Book } from './book'
 
 export type Quote = {
   id: number
-  book?: {
-    id: number
-    title: string
-    author: {
-      id: number
-      name: string
-    }
-  }
+  book: Book
   meta: string
   quotee: string
   createdAt: Date
@@ -21,6 +15,7 @@ export type Quote = {
   deleted: boolean
   staged: boolean
   tags: TagType[]
+  user: number
 }
 
 const useQuoteApi = () => {
@@ -55,8 +50,8 @@ const useQuoteApi = () => {
         body: stringify({ ...rest, user }),
       }
 
-      const res = await fetch(`http://localhost:8000/quotes/${quote.id}`, requestOptions)
-      queryClient.invalidateQueries(['quotes'])
+      const res = await fetch(`http://localhost:8000/quotes/${id ? id : ''}`, requestOptions)
+      queryClient.invalidateQueries(['books'])
       return (await res.json()) as Quote
     },
 

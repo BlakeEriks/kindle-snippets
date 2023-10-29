@@ -1,4 +1,3 @@
-@import "preflight.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,4 +14,8 @@ svg {
   .ant-typography-edit {
     opacity: 100;
   }
+}
+
+.ant-upload.ant-upload-select {
+  display: block;
 }

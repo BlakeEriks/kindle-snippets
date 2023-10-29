@@ -10,6 +10,7 @@ import App from './App'
 import Modal from './components/Modal'
 import NewQuote from './components/NewQuote'
 import Quotes from './components/Quotes'
+import Random from './components/Random'
 import Staging from './components/Staging'
 import UserSelect from './components/UserSelect'
 import './index.css'
@@ -19,6 +20,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: Infinity,
+      retry: false,
     },
   },
 })
@@ -28,9 +30,10 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route index element={<Quotes />} />
+      <Route path='random' element={<Random />} />
       <Route path='user' element={<UserSelect />} />
       <Route path='new' element={<NewQuote />} />
-      <Route path='upload' element={<Staging />} />
+      <Route path='staging' element={<Staging />} />
     </Route>
   )
 )

@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { Author } from './author'
 import { Quote } from './quote'
 
@@ -12,13 +12,12 @@ export type Book = {
 const useBookApi = () => {
   const queryClient = useQueryClient()
 
-  const booksQuery = useQuery<Book[], Error>(['books'], async () => {
-    const res = await fetch('http://localhost:8000/books')
-    return await res.json()
-  })
-
   return {
-    books: booksQuery.data,
+    getBooks: async (opts = {}) => {
+      const params = new URLSearchParams(opts)
+      const res = await fetch(`http://localhost:8000/books?${params}`)
+      return await res.json()
+    },
 
     createBook: async (book: Partial<Book>) => {
       const requestOptions = {

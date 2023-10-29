@@ -1,11 +1,8 @@
-import { Outlet } from 'react-router-dom';
-import Header from './components/Header';
-import { useNavigate } from 'react-router-dom';
-import { useAtomValue } from 'jotai';
-import userAtom from './state/user';
-import { useEffect } from 'react';
-import { Layout } from 'antd';
-import { Content } from 'antd/es/layout/layout';
+import { useAtomValue } from 'jotai'
+import { useEffect } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
+import Header from './components/Header'
+import userAtom from './state/user'
 
 /**
  * TODO
@@ -13,10 +10,9 @@ import { Content } from 'antd/es/layout/layout';
  * Let's make a singular view for quotes to land on that you can randomize, or go to via /quotes/quote
  * Save uploads to reclick on later
  * Daily email feature
- *  */ 
+ *  */
 
-function App() {
-
+const App = () => {
   const navigate = useNavigate()
   const user = useAtomValue(userAtom)
 
@@ -27,13 +23,11 @@ function App() {
   }, [user, navigate])
 
   return (
-    <Layout className='h-screen'>
+    <div className='flex flex-col h-screen pb-12'>
       <Header />
-      <Content>
-        <Outlet />
-      </Content>
-    </Layout>
-  );
+      <Outlet />
+    </div>
+  )
 }
 
-export default App;
+export default App
