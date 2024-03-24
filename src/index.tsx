@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ReactDOM from 'react-dom/client'
+import { Toaster } from 'react-hot-toast'
 import {
   Route,
   RouterProvider,
@@ -30,7 +31,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route index element={<Quotes />} />
-      <Route path='random' element={<Random />} />
+      <Route path='random/:seed?' element={<Random />} />
       <Route path='user' element={<UserSelect />} />
       <Route path='new' element={<NewQuote />} />
       <Route path='staging' element={<Staging />} />
@@ -43,6 +44,7 @@ root.render(
   <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
     <Modal />
+    <Toaster />
   </QueryClientProvider>
 )
 
