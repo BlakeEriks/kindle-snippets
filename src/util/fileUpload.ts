@@ -1,5 +1,6 @@
 import { RcFile } from 'antd/es/upload'
 import { useAtomValue } from 'jotai'
+import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import useQuoteApi from '../api/quote'
 import userAtom from '../state/user'
@@ -10,7 +11,7 @@ const useFileUpload = () => {
   const navigate = useNavigate()
 
   return {
-    handleUpload: (file: RcFile, FileList: RcFile[]): Promise<any> => {
+    handleUpload: (file: RcFile): Promise<any> => {
       return new Promise(resolve => {
         const reader = new FileReader()
         reader.readAsText(file)
@@ -35,7 +36,9 @@ const useFileUpload = () => {
             .filter(Boolean) as any[]
 
           // Save the snippets to server
-          resolve(await upload(parsedClippings))
+          const res = await upload(parsedClippings)
+          toast.success(`Added ${res.length} new quote(s)!`)
+          resolve(res)
           navigate('staging')
         }
       })

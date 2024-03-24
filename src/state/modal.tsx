@@ -2,22 +2,26 @@ import { ModalProps } from 'antd'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 const isModalOpenAtom = atom(false)
-const modalPropsAtom = atom<ModalProps>({})
+
+const modalPropsAtom = atom<any>({})
+
 const updateModalPropsAtom = atom(
-  (_get) => null,
-  (get, set, modalProps: ModalProps) => {
-    set(modalPropsAtom, {...get(modalPropsAtom), ...modalProps})
+  _get => null,
+  (get, set, modalProps: any) => {
+    set(modalPropsAtom, { ...get(modalPropsAtom), ...modalProps })
   }
 )
+
 const openModalAtom = atom(
-  (_get) => null,
+  _get => null,
   (_get, set, modalProps: ModalProps) => {
     set(isModalOpenAtom, true)
     set(modalPropsAtom, modalProps)
   }
 )
+
 const closeModalAtom = atom(
-  (_get) => null,
+  _get => null,
   (_get, set, _component) => {
     set(isModalOpenAtom, false)
     set(modalPropsAtom, {})
@@ -35,12 +39,12 @@ const useModal = () => {
     props,
     updateProps,
     open,
-    openModal: (props: ModalProps) => {
+    openModal: (props: any) => {
       setOpenModal(props)
     },
     closeModal: () => {
       setCloseModal()
-    }
+    },
   }
 }
 
