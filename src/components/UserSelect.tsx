@@ -28,7 +28,7 @@ const UserSelect = () => {
 
   return (
     <div className='m-[10%]'>
-      <h1 className='text-2xl text-center my-6'>Who's Using Quoats?</h1>
+      <h1 className='text-2xl text-center my-6'>Who's Using Quotes?</h1>
       <div className='flex justify-center'>
         {allUsers.data?.map(({ name, id }: User) => (
           <div
