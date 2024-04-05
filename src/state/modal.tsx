@@ -1,51 +1,21 @@
-import { ModalProps } from 'antd'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 
-const isModalOpenAtom = atom(false)
+const activeModalAtom = atom<null | string>(null)
 
 const modalPropsAtom = atom<any>({})
 
-const updateModalPropsAtom = atom(
-  _get => null,
-  (get, set, modalProps: any) => {
-    set(modalPropsAtom, { ...get(modalPropsAtom), ...modalProps })
-  }
+export const modalStateAtom = atomFamily((modalId: string) =>
+  atom(
+    get => (get(activeModalAtom) === modalId ? get(modalPropsAtom) : null),
+    (_get, set, state: any) => {
+      if (state) {
+        set(activeModalAtom, modalId)
+        set(modalPropsAtom, state)
+      } else {
+        set(activeModalAtom, null)
+        set(modalPropsAtom, {})
+      }
+    }
+  )
 )
-
-const openModalAtom = atom(
-  _get => null,
-  (_get, set, modalProps: ModalProps) => {
-    set(isModalOpenAtom, true)
-    set(modalPropsAtom, modalProps)
-  }
-)
-
-const closeModalAtom = atom(
-  _get => null,
-  (_get, set, _component) => {
-    set(isModalOpenAtom, false)
-    set(modalPropsAtom, {})
-  }
-)
-
-const useModal = () => {
-  const open = useAtomValue(isModalOpenAtom)
-  const props = useAtomValue(modalPropsAtom)
-  const updateProps = useSetAtom(updateModalPropsAtom)
-  const [, setOpenModal] = useAtom(openModalAtom)
-  const [, setCloseModal] = useAtom(closeModalAtom)
-
-  return {
-    props,
-    updateProps,
-    open,
-    openModal: (props: any) => {
-      setOpenModal(props)
-    },
-    closeModal: () => {
-      setCloseModal()
-    },
-  }
-}
-
-export default useModal

@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import useAuthorApi from 'api/author'
 import useBookApi, { Book } from 'api/book'
+import { useAtom } from 'jotai'
 import { titleCase } from 'lib/utils'
 import { CaseSensitiveIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import useModal from 'state/modal'
+import { modalStateAtom } from 'state/modal'
 import { Button } from '../ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
@@ -21,8 +22,8 @@ export const EditBookDialog = () => {
   const { getBooks, saveBook } = useBookApi()
   const { saveAuthor } = useAuthorApi()
   const { data: books } = useQuery<Book[]>(['books'], getBooks)
-  const modal = useModal()
-  const book = books?.find(book => book.id === modal.props?.bookId)
+  const [modalState, setModalState] = useAtom(modalStateAtom('editBook'))
+  const book = books?.find(book => book.id === modalState?.bookId)
 
   const form = useForm<EditBook>({
     // resolver: zodResolver(FormSchema),
@@ -44,7 +45,7 @@ export const EditBookDialog = () => {
       edited = true
     }
     if (edited) toast.success('Book updated')
-    modal.closeModal()
+    setModalState(null)
   }
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export const EditBookDialog = () => {
   }, [book])
 
   return (
-    <Dialog open={modal.open} onOpenChange={isOpen => !isOpen && modal.closeModal()}>
+    <Dialog open={!!modalState} onOpenChange={isOpen => !isOpen && setModalState(null)}>
       <DialogContent className='sm:max-w-[425px] bg-white'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className='gap-2'>
