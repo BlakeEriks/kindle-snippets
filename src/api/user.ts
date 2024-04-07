@@ -10,7 +10,7 @@ const useUserApi = () => {
 
   return {
     allUsers: useQuery<User[]>(['users'], async () => {
-      const res = await fetch('http://localhost:8000/users')
+      const res = await fetch('process.env.REACT_APP_API_URL/users')
       return await res.json()
     }),
 
@@ -20,7 +20,7 @@ const useUserApi = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user),
       }
-      const res = await fetch('http://localhost:8000/users', requestOptions)
+      const res = await fetch('process.env.REACT_APP_API_URL/users', requestOptions)
       queryClient.invalidateQueries(['users'])
       return await res.json()
     },

@@ -5,7 +5,7 @@ export type TagType = {
 
 const TagApi = {
   getAllTags: async (): Promise<TagType[]> => {
-    const res = await fetch('http://localhost:8000/tags')
+    const res = await fetch('process.env.REACT_APP_API_URL/tags')
     return await res.json()
   },
 
@@ -16,7 +16,7 @@ const TagApi = {
       body: JSON.stringify(tag),
     }
 
-    const res = await fetch('http://localhost:8000/tags', requestOptions)
+    const res = await fetch('process.env.REACT_APP_API_URL/tags', requestOptions)
     return await res.json()
   },
 }
