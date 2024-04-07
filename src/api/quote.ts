@@ -31,14 +31,37 @@ const useQuoteApi = () => {
     quotes: data,
 
     upload: async (quotes: Partial<Quote>[]) => {
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(quotes),
+      // Function to split the array into chunks of 100 items each
+      const CHUNK_SIZE = 100
+      const chunks = []
+      for (let i = 0; i < quotes.length; i += CHUNK_SIZE) {
+        chunks.push(quotes.slice(i, i + CHUNK_SIZE))
       }
-      const res = await fetch('http://localhost:8000/quotes/upload', requestOptions)
+
+      // Function to perform the fetch request for each chunk
+      const uploadChunk = async (chunk: Partial<Quote>[]) => {
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(chunk),
+        }
+        const res = await fetch('http://localhost:8000/quotes/upload', requestOptions)
+        if (!res.ok) throw new Error(`Failed to upload chunk. Status: ${res.status}`)
+        return res.json() as Promise<Quote[]>
+      }
+
+      // Array to collect all the results
+      let allUploadedQuotes: Quote[] = []
+
+      // Sequentially upload each chunk and collect the results
+      for (const chunk of chunks) {
+        allUploadedQuotes.concat(await uploadChunk(chunk))
+      }
+
+      // Invalidate queries once after all batches have been uploaded
       queryClient.invalidateQueries(['quotes'])
-      return (await res.json()) as Quote[]
+
+      return allUploadedQuotes
     },
 
     save: async (quote: Partial<Quote>) => {

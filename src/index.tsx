@@ -8,7 +8,6 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom'
 import App from './App'
-import Modal from './components/Modal'
 import NewQuote from './components/NewQuote'
 import Quotes from './components/Quotes'
 import Random from './components/Random'
@@ -43,7 +42,6 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
-    <Modal />
     <Toaster />
   </QueryClientProvider>
 )

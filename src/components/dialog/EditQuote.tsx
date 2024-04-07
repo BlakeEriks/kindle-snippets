@@ -31,7 +31,7 @@ export const EditQuoteDialog = () => {
   const handleSubmit = ({ content, quotee, deleted }: EditQuote) => {
     if (!quote) return
 
-    if (content !== quote.content || quotee !== quote.quotee) {
+    if (content !== quote.content || quotee !== quote.quotee || deleted !== quote.deleted) {
       save({ id: quote.id, content, quotee, deleted })
       toast.success('Quote updated')
     }
