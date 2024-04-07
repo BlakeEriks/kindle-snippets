@@ -15,7 +15,7 @@ const useBookApi = () => {
   return {
     getBooks: async (opts = {}) => {
       const params = new URLSearchParams(opts)
-      const res = await fetch(`process.env.REACT_APP_API_URL/books?${params}`)
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/books?${params}`)
       return await res.json()
     },
 
@@ -25,7 +25,7 @@ const useBookApi = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(book),
       }
-      const res = await fetch('process.env.REACT_APP_API_URL/books', requestOptions)
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/books`, requestOptions)
       queryClient.invalidateQueries(['books'])
       return await res.json()
     },
@@ -38,7 +38,7 @@ const useBookApi = () => {
       }
 
       const res = await fetch(
-        `process.env.REACT_APP_API_URL/books/${book.id ?? ''}`,
+        `${process.env.REACT_APP_API_URL}/api/books/${book.id ?? ''}`,
         requestOptions
       )
       queryClient.invalidateQueries(['books'])

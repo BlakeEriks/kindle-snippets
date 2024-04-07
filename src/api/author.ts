@@ -10,7 +10,7 @@ const useAuthorApi = () => {
 
   return {
     allAuthors: useQuery<Author[], Error>(['authors'], async () => {
-      const res = await fetch('process.env.REACT_APP_API_URL/authors')
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/authors`)
       return await res.json()
     }),
 
@@ -22,7 +22,7 @@ const useAuthorApi = () => {
       }
 
       const res = await fetch(
-        `process.env.REACT_APP_API_URL/authors/${author.id ?? ''}`,
+        `${process.env.REACT_APP_API_URL}/api/authors/${author.id ?? ''}`,
         requestOptions
       )
       queryClient.invalidateQueries(['books'])
@@ -30,7 +30,9 @@ const useAuthorApi = () => {
     },
 
     deleteAuthor: async (id: number) => {
-      const res = await fetch(`process.env.REACT_APP_API_URL/authors/${id}`, { method: 'DELETE' })
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/authors/${id}`, {
+        method: 'DELETE',
+      })
       queryClient.invalidateQueries(['authors'])
       return await res.json()
     },

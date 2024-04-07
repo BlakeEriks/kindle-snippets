@@ -23,7 +23,7 @@ const useQuoteApi = () => {
   const user = useAtomValue(userAtom)
 
   const { data } = useQuery<Quote[], Error>(['quotes'], async () => {
-    const res = await fetch('process.env.REACT_APP_API_URL/quotes')
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/quotes`)
     return await res.json()
   })
 
@@ -45,7 +45,10 @@ const useQuoteApi = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(chunk),
         }
-        const res = await fetch('process.env.REACT_APP_API_URL/quotes/upload', requestOptions)
+        const res = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/quotes/upload`,
+          requestOptions
+        )
         if (!res.ok) throw new Error(`Failed to upload chunk. Status: ${res.status}`)
         return res.json() as Promise<Quote[]>
       }
@@ -74,7 +77,7 @@ const useQuoteApi = () => {
       }
 
       const res = await fetch(
-        `process.env.REACT_APP_API_URL/quotes/${id ? id : ''}`,
+        `${process.env.REACT_APP_API_URL}/api/quotes/${id ? id : ''}`,
         requestOptions
       )
       queryClient.invalidateQueries(['books'])
@@ -82,7 +85,9 @@ const useQuoteApi = () => {
     },
 
     delete: async (id: number) => {
-      const res = await fetch(`process.env.REACT_APP_API_URL/quotes/${id}`, { method: 'DELETE' })
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/quotes/${id}`, {
+        method: 'DELETE',
+      })
       queryClient.invalidateQueries(['quotes'])
       return await res.json()
     },
