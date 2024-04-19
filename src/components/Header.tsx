@@ -1,7 +1,7 @@
 import { Tooltip, Upload } from 'antd'
 import { useAtomValue } from 'jotai'
 import { cn } from 'lib/utils'
-import { ArrowLeftRight, PlusIcon, SmileIcon, UploadIcon } from 'lucide-react'
+import { ArrowLeftRight, SmileIcon, UploadIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import userAtom from '../state/user'
 import useFileUpload from '../util/fileUpload'
@@ -58,13 +58,13 @@ const Header = () => {
             </Button>
           </Upload>
         </Tooltip>
-        <Link to='new'>
+        {/* <Link to='new'>
           <Tooltip placement='bottom' title='Add Quote'>
             <Button className=''>
               <PlusIcon />
             </Button>
           </Tooltip>
-        </Link>
+        </Link> */}
         <Link to='user'>
           <Tooltip placement='bottom' title='Change User'>
             <Button className='w-12'>{user ? user.name[0].toUpperCase() : <SmileIcon />}</Button>

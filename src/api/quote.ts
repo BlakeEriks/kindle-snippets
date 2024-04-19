@@ -80,6 +80,7 @@ const useQuoteApi = () => {
         `${process.env.REACT_APP_API_URL}/api/quotes/${id ? id : ''}`,
         requestOptions
       )
+
       queryClient.invalidateQueries(['books'])
       return (await res.json()) as Quote
     },

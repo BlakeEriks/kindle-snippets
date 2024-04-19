@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import useBookApi, { Book } from 'api/book'
 import useQuoteApi from 'api/quote'
-import { Checkbox } from 'components/ui/checkbox'
 import { Textarea } from 'components/ui/textarea'
 import { useAtom } from 'jotai'
 import { useForm } from 'react-hook-form'
@@ -28,17 +27,15 @@ export const EditQuoteDialog = () => {
 
   const form = useForm<EditQuote>({ values: quote })
 
-  const handleSubmit = ({ content, quotee, deleted }: EditQuote) => {
+  const handleSubmit = ({ content, quotee }: EditQuote) => {
     if (!quote) return
 
-    if (content !== quote.content || quotee !== quote.quotee || deleted !== quote.deleted) {
-      save({ id: quote.id, content, quotee, deleted })
+    if (content !== quote.content || quotee !== quote.quotee) {
+      save({ id: quote.id, content, quotee })
       toast.success('Quote updated')
     }
     setModalState(null)
   }
-
-  console.log(books, modalState, book, quote)
 
   return (
     <Dialog open={!!modalState} onOpenChange={isOpen => !isOpen && setModalState(null)}>
@@ -70,19 +67,6 @@ export const EditQuoteDialog = () => {
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='deleted'
-              render={({ field }) => (
-                <FormItem className='flex space-x-3 py-4 items-center space-y-0'>
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel>Disabled</FormLabel>
                   <FormMessage />
                 </FormItem>
               )}

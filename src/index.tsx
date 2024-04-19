@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import NewQuote from 'components/NewQuote'
 import ReactDOM from 'react-dom/client'
 import { Toaster } from 'react-hot-toast'
 import {
@@ -8,10 +9,8 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom'
 import App from './App'
-import NewQuote from './components/NewQuote'
 import Quotes from './components/Quotes'
 import Random from './components/Random'
-import Staging from './components/Staging'
 import UserSelect from './components/UserSelect'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
@@ -29,11 +28,11 @@ const queryClient = new QueryClient({
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
-      <Route index element={<Quotes />} />
       <Route path='random/:seed?' element={<Random />} />
       <Route path='user' element={<UserSelect />} />
       <Route path='new' element={<NewQuote />} />
-      <Route path='staging' element={<Staging />} />
+      {/* <Route path='staging' element={<Staging />} /> */}
+      <Route path=':bookId?' element={<Quotes />} />
     </Route>
   )
 )
